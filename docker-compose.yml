@@ -1,0 +1,39 @@
+version: "3.9"
+
+services:
+  backend:
+    build: ./backend
+    container_name: grocery_backend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend:/app - /app/node_modules
+    command: npm run dev
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://user:password@db:5432/grocerydb
+
+  frontend:
+    build: ./frontend
+    container_name: grocery_frontend
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./frontend:/app
+    command: npm run serve
+
+  db:
+    image: postgres:15
+    container_name: grocery_postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: grocerydb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
