@@ -1,12 +1,18 @@
+import dotenv from 'dotenv';
 import express from 'express';
+import groceryRoutes from './routes/groceryRoutes';
+
+if (process.env.NODE_ENV === 'docker') {
+  dotenv.config({ path: '.env.docker' });
+} else {
+  dotenv.config();
+}
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+app.use(express.json());
 
-app.get('/', (_req, res) => {
-  res.send('Hello from TypeScript backend!');
-});
+app.use('/api/groceries', groceryRoutes);
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.listen(3000, () => {
+  console.log('Server running on port 3000');
 });

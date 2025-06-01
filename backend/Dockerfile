@@ -1,5 +1,3 @@
-# backend/Dockerfile
-
 # Use an official Node.js image
 FROM node:18
 
@@ -10,7 +8,13 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
-# Copy the rest of the code
+# ⬇️ Copy Prisma schema separately first
+COPY prisma ./prisma
+
+# ⬇️ Generate Prisma client (schema now exists)
+RUN npx prisma generate
+
+# ⬇️ Now copy the rest of the application code
 COPY . .
 
 # Build the TypeScript code
@@ -21,3 +25,4 @@ EXPOSE 3000
 
 # Start the server
 CMD ["node", "dist/index.js"]
+
